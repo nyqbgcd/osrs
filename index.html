@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>OSRS Bond Calculator</title>
+		<link rel="shortcut icon" href="bond.png" type="image/x-icon"/>
+		<style>
+			body {
+				background-color: rgb(25,25,25);
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+				margin: 0;
+				padding: 0;
+				user-select: none;
+			}
+			#content {
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				margin: 0px;
+				left: 0px;
+				top: 0px;
+			}
+
+			/*Not quite a third*/
+			.third_section {
+				height: 40%;
+				width: 95%;
+				left: 50%;
+				transform: translateX(-50%);
+				margin-left: 0px;
+				margin-right: 0px;
+				margin-top: 0%;
+				margin-bottom: 1%;
+				position: relative;
+				padding: 1%;
+			}
+			/*Less than third*/
+			.less_third_section {
+				height: 20%;
+				width: 95%;
+				left: 50%;
+				transform: translateX(-50%);
+				margin-left: 0px;
+				margin-right: 0px;
+				margin-top: 0%;
+				margin-bottom: 1%;
+				position: relative;
+				padding: 1%;
+			}
+			#footer {
+				position: absolute;
+				bottom: 0px;
+				margin-bottom: 0px;
+			}
+			@keyframes fly_in_top {
+				0% {top: -100%;}
+				100% {top: 0;}
+			}
+			@keyframes fly_in_bottom_footer {
+				0% {bottom: -50%;}
+				100% {bottom:0px;}
+			}
+			.floating {
+				border-color: rgb(25,25,25);
+				background-color: rgb(40,40,40);
+				border-width: 1px;
+				border-style: solid;
+				transition: border-color 1s, box-shadow 1s;
+				box-shadow: 0px 0px 40px rgb(0,0,0);
+				
+			}
+			.animate_fly_in {
+				animation-name: fly_in_top;
+				animation-duration: 1s;
+			}
+			.animate_fly_bot {
+				animation-name: fly_in_bottom_footer;
+				animation-duration: 1s;
+			}
+
+			.floating:hover {
+				border-color: rgb(80,80,80);
+				box-shadow: 0px 0px 40px rgb(20,20,20);
+			}
+			.icon {
+				height: 100%;
+				position: relative;
+				margin-right: 1%;
+				margin-left: 1%;
+
+				vertical-align: middle;
+				
+				/*transform: translateY(-50%);*/
+				float: left;
+			}
+			@font-face {
+				font-family: Osrs Bold;
+				src: url("osrsbold.ttf");
+			}
+			.classic_text {
+				color: white;
+				position: relative;
+				font-family: 'Osrs Bold';
+				font-size: 2vw;
+				margin: 4px;
+				margin-left: 8px;
+				margin-right: 8px;
+				text-shadow: 0px 0px 15px rgb(20,20,20);
+			}
+			.float_left {
+				float: left;
+			}
+			.red_text {
+				color: rgb(255,25,25);
+				position: relative;
+				font-family: 'Osrs Bold';
+				font-size: 2vw;
+				text-shadow: 0px 0px 15px rgb(20,20,20);
+			}
+			.orange_text {
+				color: rgb(255,155,25);
+				position: relative;
+				font-family: 'Osrs Bold';
+				font-size: 2vw;
+				text-shadow: 0px 0px 15px rgb(20,20,20);
+			}
+			.green_text {
+				color: rgb(155,255,25);
+				position: relative;
+				font-family: 'Osrs Bold';
+				font-size: 2vw;
+				text-shadow: 0px 0px 15px rgb(20,20,20);
+			}
+
+			.hidden {
+				visibility: hidden;
+			}
+			.progress_bg {
+				width: 90%;
+				position: relative;
+				left: 50%;
+				transform: translateX(-50%);
+				height: 30px;
+				background-color: rgb(155,155,155);
+			}
+			.progress_fg {
+				width: 0%;
+				position: relative;
+				top: 0px;
+				left: 0px;
+				height: 100%;
+				background-color: rgb(155,255,15);
+				background-image: url("bond.png");
+				background-repeat: repeat;
+				background-size: 50px 50px;
+				background-position: 0px -13px;
+				background-blend-mode: luminosity;
+
+				animation-name: progress_fg_anim;
+				animation-duration: 1s;
+				animation-iteration-count: infinite;
+				animation-timing-function: linear;
+			}
+			a {
+				color: rgb(255,155,0);
+			}
+			.center_text {
+				text-align: center;
+			}
+			.low_margin {
+				margin: 1px;
+			}
+			@keyframes progress_fg_anim {
+				0% { background-position: 0px -13px; }
+				100% {background-position: 50px -13px; }
+			}
+			.time {
+				width: 15%;
+			}
+			::-webkit-datetime-edit-text { color: rgb(255,155,25); padding: 0 0.3em; }
+			::-webkit-inner-spin-button { display: none; }
+			::-webkit-calendar-picker-indicator { background: rgb(25,25,25); }
+
+		</style>
+	</head>
+	<body>
+		<div id="content">
+			<div id="header" class="third_section floating animate_fly_in">
+				<img class="icon" src="bond.png"/>
+				<br/><br/>
+				<br/>
+				<img src="stats.png" width="20"/><span class="classic_text float_left">Please enter <a href="https://www.runescape.com/account_settings#settingsRight" target="_blank">the ending of the membership:</a></span><input id="end" type="date" onchange="end();" class="calendar floating classic_text"/><input id="endTime" type="text" onchange="end();" placeholder="24h Time (HH:MM)" class="time floating classic_text"/>
+				<br/>
+				<img src="coins.png" width="20"/><span class="classic_text float_left">Please enter <a href="https://www.ge-tracker.com/item/old-school-bond" target="_blank">current bond price</a>:</span><input id="bondPrice" type="text" value="" onchange="end();" class="floating classic_text"/>
+				<br/>
+				<img src="coins.png" width="20"/><span class="classic_text float_left">Please enter how much GP you have:</span><input id="gpSaved" type="text" value="" onchange="end();" class="floating classic_text"/>
+				<br/>
+			</div>
+			<div id="gp" class="floating animate_fly_in">
+				<p class="classic_text" id="enterValues" style="visibility: visible;">Please enter your stats above!</p>
+				<p class="classic_text" id="maintain" style="visibility: hidden;">In order to maintain your membership, you need to make <span id="goldPerDay"></span> <img src="coins.png" width="30"/> per day from this point on.</p>
+				<p class="classic_text" id="left" style="visibility: hidden;">You have <span id="goldLeft"></span> <img src="coins.png" width="30"/> left to make up.</p>
+				<br/>
+				<p class="classic_text" id="remain" style="visibility: hidden;">You have <span class="red_text" id="remainDay">6</span> days and <span class="red_text" id="remainHour">0</span> hours of membership remaining.</p>
+				<p id="percent" class="orange_text center_text low_margin" >75% Paid For</p><div class="progress_bg" id="progress_bg" style="visibility: hidden;">
+					<div class="progress_fg" id="progress_fg" style="visibility: hidden;"></div>
+				</div><br/>
+			</div>
+			<div id="footer" class="less_third_section floating animate_fly_bot">
+				<img src="headshot.png" width="80px"/><span class="classic_text" style="float:top;">Tool created by <a target="_blank" class="classic_text" href="https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal.ws?user1=nyqbgcd">Nyqbgcd.</a></span><br/>
+				<a href="https://forms.gle/TNapw6grfnTCgtkZ6" target="_blank" class="classic_text orange_text" id="feedback">Leave feedback</a>
+				<a href="#" class="classic_text red_text" id="clear">Clear Data</a>
+			</div>
+		</div>
+		<script>
+var beginDateSaved = undefined
+var endDateSaved = undefined
+var gpSaved = undefined
+//var gpLastEntered = undefined
+var bondPrice = undefined
+
+document.getElementById("clear").onclick = function() {
+	window.localStorage.removeItem("endDateSaved")
+	window.localStorage.removeItem("bondPrice")
+	window.localStorage.removeItem("gpSaved")
+	location.reload()
+}
+
+/*$.ajax({url:"https://secure.runescape.com/m=itemdb_oldschool/a=13/api/catalogue/detail.json?item=13190",dataType:"jsonp",type:"GET",success:function(data) {bondPrice = data} })*/
+hideFunctional()
+window.onload = function() {
+	var imgs = document.getElementsByTagName("img")
+	for(var i in imgs) {
+		if(isElement(imgs[i])) {
+			imgs[i].setAttribute("draggable",false)
+		}
+	}
+}
+
+//copy/pasted from some website
+function isElement(obj) {
+  try {
+    //Using W3 DOM2 (works for FF, Opera and Chrome)
+    return obj instanceof HTMLElement;
+  }
+  catch(e){
+    //Browsers not supporting W3 DOM2 don't have HTMLElement and
+    //an exception is thrown and we end up here. Testing some
+    //properties that all elements have (works on IE7)
+    return (typeof obj==="object") &&
+      (obj.nodeType===1) && (typeof obj.style === "object") &&
+      (typeof obj.ownerDocument ==="object");
+  }
+}
+
+load()
+
+function pad(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
+
+function save() {
+	//window.localStorage.setItem("beginDateSaved",beginDateSaved.getTime())
+	window.localStorage.setItem("endDateSaved",endDateSaved.getTime())
+	window.localStorage.setItem("gpSaved",gpSaved)
+	//window.localStorage.setItem("gpLastEntered",gpLastEntered.getTime())
+	window.localStorage.setItem("bondPrice",bondPrice)
+}
+
+function load() {
+	if(window.localStorage.getItem("endDateSaved") != undefined) {
+		//beginDateSaved = new Date(parseInt(window.localStorage.getItem("beginDateSaved")))
+		endDateSaved = new Date(parseInt(window.localStorage.getItem("endDateSaved")))
+		gpSaved = parseInt(window.localStorage.getItem("gpSaved"))
+		//gpLastEntered = new Date(parseInt(window.localStorage.getItem("gpLastEntered")))
+		bondPrice = parseInt(window.localStorage.getItem("bondPrice"))
+		//document.getElementById("begin").value = pad(beginDateSaved.getFullYear(),4) + "-" + pad(beginDateSaved.getMonth()+1,2) + "-" + pad(beginDateSaved.getDate(),2)
+		document.getElementById("end").value = pad(endDateSaved.getFullYear(),4) + "-" + pad(endDateSaved.getMonth()+1,2) + "-" + pad(endDateSaved.getDate(),2)
+		document.getElementById("bondPrice").value = bondPrice
+		document.getElementById("gpSaved").value = gpSaved
+		document.getElementById("endTime").value = pad(endDateSaved.getHours(),2) + ":" + pad(endDateSaved.getMinutes(),2)
+		setRemain()
+		setGoldPerDay()
+	}
+}
+
+
+
+function getTodayDate() {
+	var todayDate = new Date()
+	return todayDate
+}
+//requires above variables to be set
+function getDaysRemaining() {
+	var diffEndToday = endDateSaved - getTodayDate()
+	//Days remaining
+	var diffEndDays = diffEndToday/1000/60/60/24
+	return diffEndDays
+}
+function numberToString(num) {
+	if(num < 10000) {
+		return num
+	}
+	if(num < 10000000) {
+		return Math.ceil(num/1000) + "k"
+	}
+	return Math.ceil(num/1000000) + "m"
+}
+function setGoldPerDay() {
+	var roundedPercent = Math.min(Math.floor(gpSaved/bondPrice*100),100),perDay = Math.max(0,Math.ceil((bondPrice - gpSaved)/getDaysRemaining()))
+	showFunctional()
+	document.getElementById("goldPerDay").innerHTML = perDay
+	document.getElementById("progress_fg").style.width = Math.min(gpSaved/bondPrice*100,100) + "%";
+	document.getElementById("percent").innerHTML = Math.floor(gpSaved/bondPrice*100) + "% Paid For";
+	document.getElementById("goldLeft").innerHTML = numberToString(Math.max(0,bondPrice-gpSaved))
+
+
+	if(perDay > 1000000) {
+		document.getElementById("percent").className = "red_text center_text low_margin"
+		document.getElementById("goldPerDay").className = "red_text center_text low_margin"
+		document.getElementById("goldLeft").className = "red_text center_text low_margin"
+	} else if(perDay > 300000) {
+		document.getElementById("percent").className = "orange_text center_text low_margin"
+		document.getElementById("goldPerDay").className = "orange_text center_text low_margin"
+		document.getElementById("goldLeft").className = "orange_text center_text low_margin"
+	} else {
+		document.getElementById("percent").className = "green_text center_text low_margin"
+		document.getElementById("goldPerDay").className = "green_text center_text low_margin"
+		document.getElementById("goldLeft").className = "green_text center_text low_margin"
+	}
+}
+function setRemain() {
+	var diffEndDays = getDaysRemaining()
+
+	document.getElementById("remain").className = "classic_text"
+	var remainDay = document.getElementById("remainDay")
+	var remainHour = document.getElementById("remainHour")
+
+	remainDay.innerHTML = Math.max(0,Math.floor(diffEndDays))
+	remainHour.innerHTML = Math.max(0,Math.floor((diffEndDays-Math.floor(diffEndDays)) * 24 * (diffEndDays < 0 ? -1 : 1)))
+
+	remainDay.className = "green_text"
+	remainHour.className = "green_text"
+	if(diffEndDays <= 7) {
+		remainDay.className = "orange_text"
+		remainHour.className = "orange_text"
+	}
+	if(diffEndDays <= 3) {
+		remainDay.className = "red_text"
+		remainHour.className = "red_text"
+	}
+}
+function stringToNumber(string) {
+	string = string.replace(/,/g,"")
+	if(string.endsWith("b") || string.endsWith("B")) {
+		string = Math.round(parseFloat(string.replace("b","").replace("B",""))*1000000000)
+	} else if(string.endsWith("m") || string.endsWith("M")) {
+		string = Math.round(parseFloat(string.replace("m","").replace("M",""))*1000000)
+	} else if(string.endsWith("k") || string.endsWith("K")) {
+		string = Math.round(parseFloat(string.replace("k","").replace("K",""))*1000)
+	} else {
+		string = parseInt(string)
+	}
+	return string
+}
+function hideElement(id) {
+	document.getElementById(id).style.visibility = "hidden"
+	document.getElementById(id).style.position = "absolute"
+}
+function showElement(id) {
+	document.getElementById(id).style.visibility = "visible"
+	document.getElementById(id).style.position = "relative"
+}
+function hideFunctional(reason) {
+	showElement("enterValues")
+
+	hideElement("maintain")
+	hideElement("percent")
+	hideElement("left")
+	hideElement("remain")
+	hideElement("progress_bg")
+	hideElement("progress_fg")
+
+	document.getElementById("enterValues").innerHTML = "Please enter your stats above!"
+
+	if(reason == undefined) {
+		return
+	}
+	if(reason.length <= 0) {
+		return
+	}
+	document.getElementById("enterValues").innerHTML = "Please enter your stats above! Reason: " + reason
+}
+function showFunctional() {
+	hideElement("enterValues")
+
+	showElement("maintain")
+	showElement("percent")
+	showElement("left")
+	showElement("remain")
+	showElement("progress_bg")
+	showElement("progress_fg")
+
+}
+function end() {
+	document.activeElement.blur()
+
+	//var begin = document.getElementById("begin").value
+	var end = document.getElementById("end").value
+	bondPrice = stringToNumber(document.getElementById("bondPrice").value)
+	gpSaved = stringToNumber(document.getElementById("gpSaved").value)
+	endTime = document.getElementById("endTime").value
+
+
+	if(!isNaN(bondPrice)) {
+		document.getElementById("bondPrice").value = bondPrice
+	}
+	if(!isNaN(gpSaved)) {
+		document.getElementById("gpSaved").value = gpSaved
+	}
+
+	var issueWithEndTime = false
+	if(endTime == undefined || endTime == "") {
+		issueWithEndTime = true
+	} else if(isNaN(endTime.split(":")[0].replace(":","")) || isNaN(endTime.split(":")[1].replace(":",""))) {
+			issueWithEndTime = true
+	}
+	if(/*begin == "" || */ issueWithEndTime || end == "" || isNaN(bondPrice) || isNaN(gpSaved)) {
+		//you are not ready yet
+		hideFunctional(/*begin == "" ? "Beginning date is wrong" : */(issueWithEndTime) ? "Ending time is wrong (It should look like this: '15:24')" : (end == "" ? "Ending date is wrong" : (isNaN(bondPrice) ? "Bond price is not a valid number" : (isNaN(gpSaved) ? "Your saved GP is not a number" : ""))))
+		return
+	}
+
+	/*var splitBegin = begin.split("-")*/
+	var splitEnd = end.split("-")
+	//var beginDate = new Date(parseInt(splitBegin[0]),parseInt(splitBegin[1])-1,parseInt(splitBegin[2]),0,0,0)
+	var todayDate = getTodayDate()
+	var endDate = new Date(parseInt(splitEnd[0]),parseInt(splitEnd[1])-1,parseInt(splitEnd[2]),parseInt(endTime.split(":")[0].replace(":","")),parseInt(endTime.split(":")[1].replace(":","")),0)
+	//var diffTotal = endDate - beginDate
+	
+
+	endDateSaved = endDate
+	//beginDateSaved = beginDate
+
+
+	setRemain()
+	setGoldPerDay()
+
+	save()
+}
+		</script>
+	</body>
+</html>
